@@ -3,8 +3,13 @@
 **Planner App**:
 
 **Project Description**:
+A simple app with calendar to schedule events and a timer for productivity
 
 **Project Goals**:
+Implement a Calendar Feature – Allow users to schedule, view, and manage events.
+Integrate a Timer for Productivity – Provide a countdown or stopwatch functionality to help users focus.
+Minimalist & Efficient Design – Keep the app lightweight and responsive.
+
 
 ## Instructions for Build and Use
 
