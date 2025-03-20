@@ -7,4 +7,6 @@
     <string name="reset">Reset</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
+    <string name="back"><![CDATA[<-]]></string>
+    <string name="forward"><![CDATA[->]]></string>
 </resources>
