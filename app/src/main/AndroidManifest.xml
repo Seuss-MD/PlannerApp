@@ -36,6 +36,7 @@
         </activity>
         <activity android:name=".CalendarWeekView" />
         <activity android:name=".CalendarDaily" />
+        <activity android:name=".CalendarEventMake" />
         <activity android:name=".CalendarEventEdit" />
     </application>
 

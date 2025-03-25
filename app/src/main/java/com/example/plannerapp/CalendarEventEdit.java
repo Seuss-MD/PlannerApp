@@ -9,27 +9,49 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 
-
-public class CalendarEventEdit extends AppCompatActivity
-{
-    private TimePickerDialog timePickerDialog;
-    private TextView chooseTime;
+public class CalendarEventEdit extends AppCompatActivity {
     private EditText eventNameET;
     private TextView eventDateTV;
+    private TextView chooseTime;
+    private String eventId;
+    private FirebaseFirestore db;
+    private TimePickerDialog timePickerDialog;
+    private LocalTime time;
     private String amPm;
 
-    private LocalTime time;
-
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.calendar_event_edit);
-        initWidgets();
-        chooseTime = findViewById(R.id.etChooseTime);
-        time = LocalTime.now();
+
+        db = FirebaseFirestore.getInstance();
+
+        eventNameET = findViewById(R.id.eventNameEdit);
+        eventDateTV = findViewById(R.id.eventDateEdit);
+        chooseTime = findViewById(R.id.eventTimeEdit);
+
+        eventId = getIntent().getStringExtra("eventId");
+        String eventName = getIntent().getStringExtra("eventName");
+        String eventDate = getIntent().getStringExtra("eventDate");
+        String eventTime = getIntent().getStringExtra("eventTime");
+
+        if (eventName != null) {
+            eventNameET.setText(eventName);
+        }
+        if (eventDate != null) {
+            eventDateTV.setText(eventDate);
+        }
+        if (eventTime != null) {
+            chooseTime.setText(eventTime);
+        }
+        time = eventTime != null ? LocalTime.parse(eventTime) : LocalTime.now();
         chooseTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -42,27 +64,39 @@ public class CalendarEventEdit extends AppCompatActivity
                         } else {
                             amPm = "AM";
                         }
-                        chooseTime.setText("Time: " + CalendarUtils.formattedTime(time));
+                        System.out.println("Time format: " + CalendarUtils.formattedTime(time));
+                        System.out.println("Time: " + time);
+                        chooseTime.setText(CalendarUtils.formattedTime(time));
                     }
                 }, time.getHour(), time.getMinute(), false);
                 timePickerDialog.show();
             }
         });
-        eventDateTV.setText("Date: " + CalendarUtils.formattedDate(CalendarUtils.selectedDate));
     }
 
-    private void initWidgets()
-    {
-        eventNameET = findViewById(R.id.eventNameET);
-        eventDateTV = findViewById(R.id.eventDateTV);
-        chooseTime = findViewById(R.id.etChooseTime);
-    }
+    public void saveEventAction(View view) {
+        String updatedName = eventNameET.getText().toString();
+        String updatedDate = eventDateTV.getText().toString();
+        String updatedTime = time.toString();
 
-    public void saveEventAction(View view)
-    {
-        String eventName = eventNameET.getText().toString();
-        CalendarEvent newCalendarEvent = new CalendarEvent(eventName, CalendarUtils.selectedDate, time);
-        CalendarEvent.eventsList.add(newCalendarEvent);
-        finish();
+        if (updatedName.isEmpty() || updatedDate.isEmpty() || updatedTime.isEmpty()) {
+            System.err.println("Error: All fields must be filled out.");
+            return;
+        }
+
+        Map<String, Object> updatedData = new HashMap<>();
+        updatedData.put("name", updatedName);
+        updatedData.put("date", updatedDate);
+        updatedData.put("time", updatedTime);
+
+        db.collection("events").document(eventId)
+                .update(updatedData)
+                .addOnSuccessListener(aVoid -> {
+                    System.out.println("Event updated successfully!");
+                    finish();
+                })
+                .addOnFailureListener(e -> {
+                    System.err.println("Error updating event: " + e.getMessage());
+                });
     }
 }
