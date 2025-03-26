@@ -2,9 +2,11 @@ package com.example.plannerapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -14,20 +16,26 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Calendar;
 
 
 public class CalendarEventMake extends AppCompatActivity
 {
     private TimePickerDialog timePickerDialog;
-    private TextView chooseTime;
+    private Button chooseTime;
+    private Button chooseDate;
+    private EditText displayTime;
     private EditText eventNameET;
-    private TextView eventDateTV;
+    private EditText displayDate;
     private String amPm;
     private LocalTime time;
     private FirebaseFirestore db;
     private FirebaseUser user;
     private String userId;
+
+    private LocalDate date;
 
 
     @Override
@@ -49,6 +57,9 @@ public class CalendarEventMake extends AppCompatActivity
         }
 
         chooseTime = findViewById(R.id.etChooseTime);
+        chooseDate = findViewById(R.id.etChooseDate);
+        displayTime = findViewById(R.id.displayTime);
+        displayDate = findViewById(R.id.displayDate);
         time = LocalTime.now();
         chooseTime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,19 +73,39 @@ public class CalendarEventMake extends AppCompatActivity
                         } else {
                             amPm = "AM";
                         }
-                        chooseTime.setText("Time: " + CalendarUtils.formattedTime(time));
+                        displayTime.setText("Time: " + CalendarUtils.formattedTime(time));
                     }
                 }, time.getHour(), time.getMinute(), false);
                 timePickerDialog.show();
             }
         });
-        eventDateTV.setText("Date: " + CalendarUtils.formattedDate(CalendarUtils.selectedDate));
+        chooseDate.setOnClickListener(v -> {
+            java.util.Calendar calendar = java.util.Calendar.getInstance();
+            int year = calendar.get(java.util.Calendar.YEAR);
+            int month = calendar.get(java.util.Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, selectedYear, selectedMonth, selectedDay) -> {
+                date = LocalDate.of(selectedYear, selectedMonth + 1, selectedDay);
+                String formattedDate = formatDate(date);;
+                displayDate.setText(formattedDate);
+            }, year, month, day);
+
+            datePickerDialog.show();
+        });
+    }
+
+    private String formatDate(LocalDate date) {
+        int month = date.getMonthValue();
+        int day = date.getDayOfMonth();
+        int year = date.getYear();
+        return String.format("%02d-%02d-%04d", month, day, year);
     }
 
     private void initWidgets()
     {
         eventNameET = findViewById(R.id.eventNameET);
-        eventDateTV = findViewById(R.id.eventDateTV);
+        displayDate = findViewById(R.id.displayDate);
         chooseTime = findViewById(R.id.etChooseTime);
     }
 

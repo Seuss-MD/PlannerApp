@@ -1,9 +1,11 @@
 package com.example.plannerapp;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -34,21 +36,17 @@ public class Calendar extends Fragment implements CalendarAdapter.OnItemListener
         initWidgets(view);
         CalendarUtils.selectedDate = LocalDate.now();
         setMonthView();
+        changeStatusBarColor();
         return view;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         Button previousMonthButton = view.findViewById(R.id.previousMonthButton);
         Button nextMonthButton = view.findViewById(R.id.nextMonthButton);
-        Button weeklyActionButton = view.findViewById(R.id.weekly_button);
-        weeklyActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                weeklyAction(v);
-            }
-        });
+
         nextMonthButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,16 +93,25 @@ public class Calendar extends Fragment implements CalendarAdapter.OnItemListener
     @Override
     public void onItemClick(int position, LocalDate date)
     {
+        if (CalendarUtils.selectedDate.equals(date)) {
+            Intent intent = new Intent(getActivity(), CalendarWeekView.class);
+            startActivity(intent);
+        }
+
         if(date != null)
         {
+
             CalendarUtils.selectedDate = date;
+
             setMonthView();
         }
     }
+    private void changeStatusBarColor() {
+        if (getActivity() != null) {
+            getActivity().getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            getActivity().getWindow().setStatusBarColor(ContextCompat.getColor(getContext(),  R.color.purple));
 
-    public void weeklyAction(View view)
-    {
-        startActivity(new Intent(getActivity(), CalendarWeekView.class));
+        }
     }
 
 

@@ -1,5 +1,7 @@
 package com.example.plannerapp;
 
+import static android.app.PendingIntent.getActivity;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -80,6 +82,10 @@ public class CalendarWeekView extends AppCompatActivity implements CalendarAdapt
 
     @Override
     public void onItemClick(int position, LocalDate date) {
+        if (CalendarUtils.selectedDate.equals(date)) {
+            Intent intent = new Intent(CalendarWeekView.this, CalendarDaily.class);
+            startActivity(intent);
+        }
         CalendarUtils.selectedDate = date;
         setWeekView();
     }

@@ -140,7 +140,7 @@
         <LinearLayout
             android:id="@+id/calendar_content"
             android:layout_width="match_parent"
-            android:layout_height="46dp"
+            android:layout_height="64dp"
             android:orientation="vertical"
             app:layout_constraintTop_toBottomOf="@id/days_of_week"
             app:layout_constraintStart_toStartOf="parent"
@@ -148,9 +148,9 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/calendarRecyclerView"
+                android:paddingTop="10dp"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                />
+                android:layout_height="match_parent" />
 
 
 
