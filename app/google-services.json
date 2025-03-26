@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "120609743900",
+    "project_id": "plannerapp-1918e",
+    "storage_bucket": "plannerapp-1918e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:120609743900:android:890704e5baa59d9194ebd9",
+        "android_client_info": {
+          "package_name": "com.example.plannerapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDfliaO5ou6HFPB6tf-_VWgZ-odzlw981w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
