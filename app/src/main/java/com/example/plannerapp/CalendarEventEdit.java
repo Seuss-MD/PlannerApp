@@ -12,7 +12,6 @@ import android.widget.TimePicker;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,25 +51,19 @@ public class CalendarEventEdit extends AppCompatActivity {
             chooseTime.setText(eventTime);
         }
         time = eventTime != null ? LocalTime.parse(eventTime) : LocalTime.now();
-        chooseTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                timePickerDialog = new TimePickerDialog(CalendarEventEdit.this, new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minutes) {
-                        time = LocalTime.of(hourOfDay, minutes);
-                        if (hourOfDay >= 12) {
-                            amPm = "PM";
-                        } else {
-                            amPm = "AM";
-                        }
-                        System.out.println("Time format: " + CalendarUtils.formattedTime(time));
-                        System.out.println("Time: " + time);
-                        chooseTime.setText(CalendarUtils.formattedTime(time));
-                    }
-                }, time.getHour(), time.getMinute(), false);
-                timePickerDialog.show();
-            }
+        chooseTime.setOnClickListener(view -> {
+            timePickerDialog = new TimePickerDialog(CalendarEventEdit.this, (view1, hourOfDay, minutes) -> {
+                time = LocalTime.of(hourOfDay, minutes);
+                if (hourOfDay >= 12) {
+                    amPm = "PM";
+                } else {
+                    amPm = "AM";
+                }
+                System.out.println("Time format: " + CalendarUtils.formattedTime(time));
+                System.out.println("Time: " + time);
+                chooseTime.setText(CalendarUtils.formattedTime(time));
+            }, time.getHour(), time.getMinute(), false);
+            timePickerDialog.show();
         });
     }
 
@@ -95,8 +88,21 @@ public class CalendarEventEdit extends AppCompatActivity {
                     System.out.println("Event updated successfully!");
                     finish();
                 })
-                .addOnFailureListener(e -> {
-                    System.err.println("Error updating event: " + e.getMessage());
-                });
+                .addOnFailureListener(e -> System.err.println("Error updating event: " + e.getMessage()));
+    }
+
+    public void deleteEventAction(View view) {
+        if (eventId == null || eventId.isEmpty()) {
+            System.err.println("Error: Event ID is missing.");
+            return;
+        }
+
+        db.collection("events").document(eventId)
+                .delete()
+                .addOnSuccessListener(aVoid -> {
+                    System.out.println("Event deleted successfully!");
+                    finish(); // Close the activity after deletion
+                })
+                .addOnFailureListener(e -> System.err.println("Error deleting event: " + e.getMessage()));
     }
 }

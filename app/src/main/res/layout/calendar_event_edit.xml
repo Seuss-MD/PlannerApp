@@ -85,9 +85,11 @@
             tools:layout_editor_absoluteX="58dp" />
 
         <Button
+            android:id="@+id/button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+
             android:background="@null"
             android:onClick="saveEventAction"
             android:text="Save"
@@ -95,9 +97,21 @@
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/eventDateEdit" />
+            app:layout_constraintEnd_toStartOf="@+id/deleteEventButton"
+            app:layout_constraintTop_toBottomOf="@+id/eventTimeEdit" />
+
+        <Button
+            android:id="@+id/deleteEventButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:onClick="deleteEventAction"
+            android:text="Delete Event"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/button"
+            app:layout_constraintTop_toBottomOf="@+id/eventTimeEdit" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
