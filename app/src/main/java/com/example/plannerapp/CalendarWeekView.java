@@ -124,6 +124,8 @@ public class CalendarWeekView extends AppCompatActivity implements CalendarAdapt
         intent.putExtra("eventId", event.getId());
         intent.putExtra("eventName", event.getName());
         intent.putExtra("eventTime", event.getTime().toString());
+        intent.putExtra("displayTime", event.getTime().toString());
+
         intent.putExtra("eventDate", event.getDate().toString());
         startActivity(intent);
     }

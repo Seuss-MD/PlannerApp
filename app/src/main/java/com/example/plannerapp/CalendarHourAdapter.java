@@ -86,6 +86,8 @@ public class CalendarHourAdapter extends ArrayAdapter<CalendarHourEvent>
     private void setEvent(TextView textView, CalendarEvent calendarEvent)
     {
         textView.setText(calendarEvent.getName());
+        if(calendarEvent.getName() == null || calendarEvent.getName().isEmpty())
+            textView.setText("No Name");
         textView.setVisibility(View.VISIBLE);
     }
 

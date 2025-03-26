@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -63,14 +64,18 @@ public class CalendarEventMake extends AppCompatActivity
 
     public void saveEventAction(View view)
     {
+        int duration = Toast.LENGTH_SHORT;
         String eventName = eventNameET.getText().toString();
         CalendarEvent newCalendarEvent = new CalendarEvent(null, eventName, CalendarUtils.selectedDate.toString(), time.toString());
         db.collection("events")
                 .add(newCalendarEvent.toMap())
                 .addOnSuccessListener(documentReference -> {
+                    Toast toast = Toast.makeText(this, "Event created and saved", duration);
+                    toast.show();
                     finish();
                 })
                 .addOnFailureListener(e -> {
+                    System.err.println("Error saving event: " + e.getMessage());
                     finish();
                 });
     }

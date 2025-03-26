@@ -74,7 +74,6 @@ public class CalendarDaily extends AppCompatActivity
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 CalendarEvent event = document.toObject(CalendarEvent.class);
                                 System.out.println("Event retrieved: " + event.getName());
-                                //event_hour = event.getTime().getHour();
                                 System.out.println("Event hour: " + event.getTime().getHour());
                                 System.out.println("Hour of Day: " + time);
                                 if (event.getTime().getHour() == time.getHour()) {

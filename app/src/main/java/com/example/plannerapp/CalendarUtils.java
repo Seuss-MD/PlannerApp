@@ -13,7 +13,7 @@ public class CalendarUtils
 
     public static String formattedDate(LocalDate date)
     {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM dd yyyy");
         return date.format(formatter);
     }
 
