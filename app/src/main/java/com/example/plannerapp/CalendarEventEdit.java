@@ -16,6 +16,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Locale;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.time.LocalTime;
@@ -28,6 +30,8 @@ public class CalendarEventEdit extends AppCompatActivity {
     private TextView chooseTime;
     private String eventId;
     private FirebaseFirestore db;
+    private FirebaseUser user;
+    private String userId;
     private TimePickerDialog timePickerDialog;
     private LocalTime time;
     private LocalDate date;
@@ -39,6 +43,14 @@ public class CalendarEventEdit extends AppCompatActivity {
         setContentView(R.layout.calendar_event_edit);
 
         db = FirebaseFirestore.getInstance();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            userId = user.getUid();
+        } else {
+            Toast.makeText(this, "User not logged in!", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
         eventNameET = findViewById(R.id.eventNameEdit);
         eventDateTV = findViewById(R.id.eventDateEdit);
@@ -118,7 +130,7 @@ public class CalendarEventEdit extends AppCompatActivity {
         updatedData.put("date", updatedDate);
         updatedData.put("time", updatedTime);
 
-        db.collection("events").document(eventId)
+        db.collection(userId).document(eventId)
                 .update(updatedData)
                 .addOnSuccessListener(aVoid -> {
                     Toast toast = Toast.makeText(this, "Event updated", duration);
@@ -135,7 +147,7 @@ public class CalendarEventEdit extends AppCompatActivity {
             return;
         }
 
-        db.collection("events").document(eventId)
+        db.collection(userId).document(eventId)
                 .delete()
                 .addOnSuccessListener(aVoid -> {
                     Toast toast = Toast.makeText(this, "Event deleted", duration);

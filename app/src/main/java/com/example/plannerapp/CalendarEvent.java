@@ -94,12 +94,7 @@ public class CalendarEvent {
 
     public LocalTime getTime()
     {
-        //normalizeTime();
         return LocalTime.parse(time);
-    }
-    public String getTimeString()
-    {
-        return time;
     }
 
     public void setTime(String time)
@@ -107,7 +102,6 @@ public class CalendarEvent {
         this.time = time;
     }
 
-    public void normalizeTime()
     {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH.mm");
 

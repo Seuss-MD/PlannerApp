@@ -10,7 +10,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -24,8 +27,11 @@ public class CalendarWeekView extends AppCompatActivity implements CalendarAdapt
     private TextView monthYearText;
     private RecyclerView calendarRecyclerView;
     private FirebaseFirestore db;
+    private FirebaseUser user;
+    private String userId;
     private ArrayList<CalendarEvent> dailyCalendarEvents;
     private RecyclerView eventRecyclerView;
+
 
 
     @Override
@@ -33,6 +39,14 @@ public class CalendarWeekView extends AppCompatActivity implements CalendarAdapt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.calendar_week_view);
         db = FirebaseFirestore.getInstance();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            userId = user.getUid();
+        } else {
+            Toast.makeText(this, "User not logged in!", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
         initWidgets();
         setWeekView();
     }
@@ -81,7 +95,7 @@ public class CalendarWeekView extends AppCompatActivity implements CalendarAdapt
             System.err.println("Error: eventRecyclerView is null");
             return;
         }
-        db.collection("events")
+        db.collection(userId)
                 .whereEqualTo("date", CalendarUtils.selectedDate.toString())
                 .get()
                 .addOnCompleteListener(task -> {

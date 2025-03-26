@@ -10,6 +10,8 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.time.LocalTime;
@@ -24,14 +26,28 @@ public class CalendarEventMake extends AppCompatActivity
     private String amPm;
     private LocalTime time;
     private FirebaseFirestore db;
+    private FirebaseUser user;
+    private String userId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.calendar_event_make);
         initWidgets();
         db = FirebaseFirestore.getInstance();
+
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            userId = user.getUid();
+        } else {
+            Toast.makeText(this, "User not logged in!", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
         chooseTime = findViewById(R.id.etChooseTime);
         time = LocalTime.now();
         chooseTime.setOnClickListener(new View.OnClickListener() {
@@ -67,7 +83,8 @@ public class CalendarEventMake extends AppCompatActivity
         int duration = Toast.LENGTH_SHORT;
         String eventName = eventNameET.getText().toString();
         CalendarEvent newCalendarEvent = new CalendarEvent(null, eventName, CalendarUtils.selectedDate.toString(), time.toString());
-        db.collection("events")
+
+        db.collection(userId)
                 .add(newCalendarEvent.toMap())
                 .addOnSuccessListener(documentReference -> {
                     Toast toast = Toast.makeText(this, "Event created and saved", duration);
@@ -75,7 +92,8 @@ public class CalendarEventMake extends AppCompatActivity
                     finish();
                 })
                 .addOnFailureListener(e -> {
-                    System.err.println("Error saving event: " + e.getMessage());
+                    Toast toast = Toast.makeText(this, "Error saving event", duration);
+                    toast.show();
                     finish();
                 });
     }

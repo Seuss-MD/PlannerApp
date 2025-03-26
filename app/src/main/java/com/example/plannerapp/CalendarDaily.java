@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -25,6 +27,8 @@ public class CalendarDaily extends AppCompatActivity
     private TextView dayOfWeekTV;
     private ListView hourListView;
     private FirebaseFirestore db;
+    private FirebaseUser user;
+    private String userId;
 
 
     @Override
@@ -33,6 +37,10 @@ public class CalendarDaily extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.calendar_daily_view);
         db = FirebaseFirestore.getInstance();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            userId = user.getUid();
+        }
         initWidgets();
     }
 
@@ -60,7 +68,7 @@ public class CalendarDaily extends AppCompatActivity
 
     private void setHourAdapter()
     {
-        db.collection("events")
+        db.collection(userId)
                 .whereEqualTo("date", selectedDate.toString())
                 .get()
                 .addOnCompleteListener(task -> {
