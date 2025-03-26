@@ -101,7 +101,7 @@ public class CalendarEventEdit extends AppCompatActivity {
                 .delete()
                 .addOnSuccessListener(aVoid -> {
                     System.out.println("Event deleted successfully!");
-                    finish(); // Close the activity after deletion
+                    finish();
                 })
                 .addOnFailureListener(e -> System.err.println("Error deleting event: " + e.getMessage()));
     }
